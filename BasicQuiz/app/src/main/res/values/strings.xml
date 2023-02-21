@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">BasicQuiz</string>
     <string name="submit_btn">Submit</string>
+    <string name="quiz_title">Android Quiz</string>
+    <string name="feedback_title_correct">Correct!</string>
+    <string name="feedback_title_incorrect">Incorrect</string>
+    <string name="feedback_btn_next">Continue</string>
 </resources>

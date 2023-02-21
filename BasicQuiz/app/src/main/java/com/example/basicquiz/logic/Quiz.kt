@@ -11,6 +11,10 @@ data class Question(
   val correct_answer: String,
   val answers: Map<String, String>
 ) {
+  /**
+   * This method assumes there are 4 questions and that the correct answer is within them
+   * Should one want to make more robust auditing, here or during the JSON parsing would be best
+   */
   fun mapToFreshDisplayQuestion(): DisplayQuestion {
     return DisplayQuestion(
       question = this.question,
@@ -20,6 +24,11 @@ data class Question(
     )
   }
 }
+
+data class QuizQuestionFeedback(
+  val wasCorrect:Boolean,
+  val feedback:String
+)
 
 data class DisplayQuestion(
   val question: String,
