@@ -17,10 +17,13 @@ import kotlinx.serialization.json.Json
 interface QuizVM {
   fun handleAction(action: QuizViewModel.Action)
   var quiz: Quiz
+  var currentQuestion: DisplayQuestion?
 }
 
 class QuizViewModel(private val application: Application) : QuizVM, AndroidViewModel(application) {
   override var quiz: Quiz by mutableStateOf(Quiz(emptyList()))
+  override var currentQuestion: DisplayQuestion? by mutableStateOf(null)
+  private var currentQuestionIndex = -1
 
   private suspend fun loadData() {
     withContext(Dispatchers.IO) {
@@ -30,6 +33,8 @@ class QuizViewModel(private val application: Application) : QuizVM, AndroidViewM
 
       val gson = Gson()
       quiz = gson.fromJson(rawJson, Quiz::class.java)
+      currentQuestionIndex = 0
+      currentQuestion = quiz.questions.getOrNull(currentQuestionIndex)?.mapToFreshDisplayQuestion()
     }
   }
 
@@ -37,11 +42,15 @@ class QuizViewModel(private val application: Application) : QuizVM, AndroidViewM
     viewModelScope.launch {
       when (action) {
         Action.LoadQuiz -> loadData()
+        Action.AdvanceQuestion -> TODO()
+        is Action.AnswerQuestion -> TODO()
       }
     }
   }
 
   sealed class Action {
     object LoadQuiz : Action()
+    data class AnswerQuestion(val guessIndex:Int) : Action()
+    object AdvanceQuestion: Action()
   }
 }

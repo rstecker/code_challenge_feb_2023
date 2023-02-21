@@ -26,6 +26,12 @@ class MainActivity : ComponentActivity() {
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
           Greeting("Android")
           QuizBasics(quiz = vm.quiz)
+          vm.currentQuestion?.let { q ->
+            QuizRound(q) {
+              vm.handleAction(
+                QuizViewModel.Action.AnswerQuestion(it))
+            }
+          }
         }
       }
     }
