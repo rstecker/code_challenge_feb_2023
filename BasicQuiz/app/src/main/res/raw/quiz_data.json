@@ -18,7 +18,7 @@
         "c": "Paused",
         "d": "Destroyed"
       },
-      "correct_answer": "a"
+      "correct_answer": "c"
     },
     {
       "question":"All layout classes are subclasses of which of the following?",

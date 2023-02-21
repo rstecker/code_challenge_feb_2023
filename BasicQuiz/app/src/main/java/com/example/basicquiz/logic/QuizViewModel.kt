@@ -72,6 +72,7 @@ class QuizViewModel(private val application: Application) : QuizVM, AndroidViewM
       }
       else -> {
         val correct = currentQuestion?.options?.firstOrNull { it.isCorrect }
+        // TOOD : wouldn't it be nicer if this was fancier?
         QuizQuestionFeedback(false, "Sorry, the correct answer was [${correct?.text}]")
       }
     }
@@ -93,6 +94,15 @@ class QuizViewModel(private val application: Application) : QuizVM, AndroidViewM
     }
   }
 
+
+  /**
+   * Basic flow of actions:
+   * - [LoadQuiz] to start, only need be called once. Starts the first question
+   * - [UpdateSelection] can be called multiple times as the user waffles over choice
+   * - [AnswerQuestion] to be called once per question-- will update/set [QuizVM.questionFeedback]
+   * - [AdvanceQuestion] will bump to the next question or trigger [QuizVM.quizFeedback] if the end is reached
+   * - [StartOver] resets state and begins quiz at beginning
+   */
   sealed class Action {
     object LoadQuiz : Action()
     object AnswerQuestion : Action()

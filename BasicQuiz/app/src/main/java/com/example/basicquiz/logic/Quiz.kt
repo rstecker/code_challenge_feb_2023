@@ -2,6 +2,11 @@ package com.example.basicquiz.logic
 
 import kotlinx.serialization.*
 
+/**
+ * File to hold data class objects representing the JSON the quiz is encoded in as well as the
+ * data classes used for UI purposes
+ */
+
 @Serializable
 data class Quiz(val questions: List<Question>)
 
