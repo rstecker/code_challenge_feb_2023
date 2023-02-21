@@ -1,0 +1,74 @@
+{
+  "questions": [
+    {
+      "question":"Which Android Studio tab is where an error is shown?",
+      "answers": {
+        "a": "ADB logs",
+        "b": "Memory",
+        "c": "CPU",
+        "d": "Logcat"
+      },
+      "correct_answer": "d"
+    },
+    {
+      "question":"Which of the following is NOT a state in the service lifecycle?",
+      "answers": {
+        "a": "Running",
+        "b": "Start",
+        "c": "Paused",
+        "d": "Destroyed"
+      },
+      "correct_answer": "a"
+    },
+    {
+      "question":"All layout classes are subclasses of which of the following?",
+      "answers": {
+        "a": "android.widget",
+        "b": "android.view.view",
+        "c": "android.view.Viewgroup",
+        "d": "None"
+      },
+      "correct_answer": "b"
+    },
+    {
+      "question":"Why is the view pager used?",
+      "answers": {
+        "a": "Paging down list items",
+        "b": "Swiping fragments",
+        "c": "Swiping activities",
+        "d": "All are correct"
+      },
+      "correct_answer": "b"
+    },
+    {
+      "question":"The full form of ANR is?",
+      "answers": {
+        "a": "Application not rendering",
+        "b": "Application not responding",
+        "c": "Application not reacting",
+        "d": "Application not reachable"
+      },
+      "correct_answer": "b"
+    },
+    {
+      "question":"Who manages data sharing between applications?",
+      "answers": {
+        "a": "Telephony managers",
+        "b": "Location manager",
+        "c": "Content providers",
+        "d": "Activity manager"
+      },
+      "correct_answer": "c"
+    },
+    {
+      "question":"Can a class be immutable in android?",
+      "answers": {
+        "a": "No, it can't",
+        "b": "Yes, Class can be immutable",
+        "c": "Can't make the class as final class",
+        "d": "None of the above"
+      },
+      "correct_answer": "d"
+    }
+  ]
+}
