@@ -17,12 +17,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.basicquiz.logic.DisplayQuestion
 import com.example.basicquiz.logic.DisplayQuestionOption
 import com.example.basicquiz.logic.QuizQuestionFeedback
+import com.example.basicquiz.logic.QuizScore
 import com.example.basicquiz.ui.theme.BasicQuizTheme
 
 @Composable
-fun QuizRound(question: DisplayQuestion, submitGuess: (Int) -> Unit) {
-  var selectedOption by remember { mutableStateOf(-1) }
-
+fun QuizRound(
+  question: DisplayQuestion, updateSelection: (Int) -> Unit, submitGuess: () -> Unit) {
   Column(
     modifier = Modifier
       .verticalScroll(rememberScrollState())
@@ -31,23 +31,22 @@ fun QuizRound(question: DisplayQuestion, submitGuess: (Int) -> Unit) {
   ) {
     Text(question.question, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
     Row(modifier = Modifier.fillMaxWidth()) {
-      QuizOption(question.options[0], selectedOption == 0) { selectedOption = 0 }
-      QuizOption(question.options[1], selectedOption == 1) { selectedOption = 1 }
+      QuizOption(question.options[0]) { updateSelection(0) }
+      QuizOption(question.options[1]) { updateSelection(1) }
     }
     Row {
-      QuizOption(question.options[2], selectedOption == 2) { selectedOption = 2 }
-      QuizOption(question.options[3], selectedOption == 3) { selectedOption = 3 }
+      QuizOption(question.options[2]) { updateSelection(2) }
+      QuizOption(question.options[3]) { updateSelection(3) }
     }
-    Button(onClick = { submitGuess(selectedOption) }) {
+    Button(onClick = { submitGuess() }) {
       Text(stringResource(id = R.string.submit_btn))
     }
   }
 }
 
 @Composable
-fun RowScope.QuizOption(
-  option: DisplayQuestionOption, isSelected: Boolean, updateSelection: () -> Unit) {
-  val bgColor = if (isSelected) Color.Blue else Color.White
+fun RowScope.QuizOption(option: DisplayQuestionOption, updateSelection: () -> Unit) {
+  val bgColor = if (option.isSelected) Color.Blue else Color.White
   Button(
     onClick = updateSelection,
     modifier = Modifier
@@ -76,6 +75,24 @@ fun QuizAnswerFeedback(feedback: QuizQuestionFeedback, dismiss: () -> Unit) {
   )
 }
 
+@Composable
+fun QuizScoreFeedback(score: QuizScore, dismiss: () -> Unit) {
+  AlertDialog(
+    onDismissRequest = { dismiss() },
+    title = {
+      Text(stringResource(id = R.string.score_title))
+    },
+    text = {
+      Text(stringResource(id = R.string.score_msg, score.numberCorrect, score.questionCount))
+    },
+    confirmButton = {
+      Button(onClick = { dismiss() }) {
+        Text(stringResource(id = R.string.score_btn))
+      }
+    }
+  )
+}
+
 @Preview(showBackground = true)
 @Composable
 fun QuizPreview() {
@@ -89,7 +106,8 @@ fun QuizPreview() {
         DisplayQuestionOption(
           "some kinda' long answer text that will be rather annoying to deal with", false, false)
       )
-    )
+    ),
+      updateSelection = {}
     ) {}
   }
 }

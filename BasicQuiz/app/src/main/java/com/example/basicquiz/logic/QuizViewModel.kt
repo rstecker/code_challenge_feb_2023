@@ -18,41 +18,61 @@ interface QuizVM {
   var quiz: Quiz
   var currentQuestion: DisplayQuestion?
   var questionFeedback: QuizQuestionFeedback?
+  var quizFeedback: QuizScore?
 }
 
 class QuizViewModel(private val application: Application) : QuizVM, AndroidViewModel(application) {
   override var quiz: Quiz by mutableStateOf(Quiz(emptyList()))
   override var currentQuestion: DisplayQuestion? by mutableStateOf(null)
   override var questionFeedback: QuizQuestionFeedback? by mutableStateOf(null)
+  override var quizFeedback: QuizScore? by mutableStateOf(null)
   private var currentQuestionIndex = -1
+  private var correctCount = 0
+
 
   private suspend fun loadData() {
     withContext(Dispatchers.IO) {
       val rawJson = application.resources
         .openRawResource(R.raw.quiz_data)
-        .bufferedReader().use { it.readText() }
+        .bufferedReader()
+        .use { it.readText() }
 
       val gson = Gson()
       quiz = gson.fromJson(rawJson, Quiz::class.java)
-      currentQuestionIndex = -1
       startNextQuestion()
     }
   }
-  private fun startNextQuestion() {
-    // TODO : audit for end of quiz
-    ++currentQuestionIndex
-    questionFeedback = null
-    currentQuestion = quiz.questions.getOrNull(currentQuestionIndex)?.mapToFreshDisplayQuestion()
+
+  private fun resetState() {
+    correctCount = 0
+    currentQuestionIndex = -1
+    // TODO : probably shuffle the question order?
   }
 
-  private fun gradeQuestion(userAnswer:Int) {
-    val choice = currentQuestion?.options?.getOrNull(userAnswer)
-    when{
+  private fun startNextQuestion() {
+    ++currentQuestionIndex
+    questionFeedback = null
+    quizFeedback = null
+    val nextQuestion = quiz.questions.getOrNull(currentQuestionIndex)
+    if (nextQuestion == null) {
+      val total = quiz.questions.size
+      quizFeedback = QuizScore(correctCount, total)
+    } else {
+      currentQuestion = nextQuestion.mapToFreshDisplayQuestion()
+    }
+  }
+
+  private fun gradeQuestion() {
+    val choice = currentQuestion?.options?.firstOrNull { it.isSelected }
+    questionFeedback = when {
       choice == null -> throw java.lang.IllegalStateException("How did we get here?")
-      choice.isCorrect -> questionFeedback = QuizQuestionFeedback(true, "Correct!")
+      choice.isCorrect -> {
+        ++correctCount
+        QuizQuestionFeedback(true, "Correct!")
+      }
       else -> {
         val correct = currentQuestion?.options?.firstOrNull { it.isCorrect }
-        questionFeedback = QuizQuestionFeedback(false, "Sorry, the correct answer was [${correct?.text}]")
+        QuizQuestionFeedback(false, "Sorry, the correct answer was [${correct?.text}]")
       }
     }
   }
@@ -62,14 +82,22 @@ class QuizViewModel(private val application: Application) : QuizVM, AndroidViewM
       when (action) {
         Action.LoadQuiz -> loadData()
         Action.AdvanceQuestion -> startNextQuestion()
-        is Action.AnswerQuestion -> gradeQuestion(action.guessIndex)
+        is Action.AnswerQuestion -> gradeQuestion()
+        Action.StartOver -> {
+          resetState()
+          startNextQuestion()
+        }
+        is Action.UpdateSelection -> currentQuestion =
+          currentQuestion?.updateSelection(action.guessIndex)
       }
     }
   }
 
   sealed class Action {
     object LoadQuiz : Action()
-    data class AnswerQuestion(val guessIndex: Int) : Action()
+    object AnswerQuestion : Action()
+    data class UpdateSelection(val guessIndex: Int) : Action()
     object AdvanceQuestion : Action()
+    object StartOver : Action()
   }
 }

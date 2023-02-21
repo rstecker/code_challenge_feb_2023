@@ -25,15 +25,25 @@ data class Question(
   }
 }
 
+data class QuizScore(val numberCorrect: Int, val questionCount: Int)
+
 data class QuizQuestionFeedback(
-  val wasCorrect:Boolean,
-  val feedback:String
+  val wasCorrect: Boolean,
+  val feedback: String
 )
 
 data class DisplayQuestion(
   val question: String,
   val options: List<DisplayQuestionOption>
-)
+) {
+  fun updateSelection(index: Int): DisplayQuestion {
+    return this.copy(
+      options = options.mapIndexed { i, opt ->
+        opt.copy(isSelected = i == index)
+      }
+    )
+  }
+}
 
 data class DisplayQuestionOption(
   val text: String,

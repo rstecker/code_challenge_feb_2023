@@ -5,4 +5,7 @@
     <string name="feedback_title_correct">Correct!</string>
     <string name="feedback_title_incorrect">Incorrect</string>
     <string name="feedback_btn_next">Continue</string>
+    <string name="score_title">The End!</string>
+    <string name="score_msg">Thanks for taking the test, you got %d out of %d correct!</string>
+    <string name="score_btn">Try again</string>
 </resources>
